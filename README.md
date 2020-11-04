@@ -1,2 +1,2 @@
-# step_course_work_dot_net
+# PacMan Consol
 Сoursework on the .NET platform and the C# language
