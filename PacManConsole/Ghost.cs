@@ -30,7 +30,7 @@ namespace PacManConsole
             Console.SetCursorPosition(PosX, PosY);
             Console.Write(Icon);
         }
-        protected virtual void ClearTheTrack()
+        protected void ClearTheTrack()
         {
             Console.SetCursorPosition(PosX, PosY);
             if (map[Console.CursorTop, Console.CursorLeft] == (int)Figures.Eat)
@@ -61,7 +61,76 @@ namespace PacManConsole
             }
             return false;
         }
-        abstract public void Update(int pacManPosX, int pacManPosY);
+        protected bool ChangeDir(ref int x, ref int y)
+        {
+            var targetPoint = new Tuple<int, int>(x, y);
+
+            if (map[y, x] == (int)Figures.EmptySpace && !visited.Contains(targetPoint) || map[y, x] == (int)Figures.Eat && !visited.Contains(targetPoint))
+            {
+                if (x == PosX + 1) Dir = 1;
+                if (x == PosX - 1) Dir = 2;
+                if (y == PosY + 1) Dir = 3;
+                if (y == PosY - 1) Dir = 4;
+
+                return true;
+            }
+            return false;
+        }
+        public virtual void Update(int pacManPosX, int pacManPosY)
+        {
+            switch (Dir)
+            {
+                case 1:
+                    if (PosX + 1 == 27 && PosY == 14)
+                    {
+                        Dir = 2;
+                        break;
+                    }
+                    else if (map[PosY, PosX + 1] == (int)Figures.EmptySpace || map[PosY, PosX + 1] == (int)Figures.Eat)
+                    {
+                        ClearTheTrack();
+                        PosX++;
+                    }
+                    else
+                        FindDir();
+                    break;
+                case 2:
+                    if (PosX - 1 == 0 && PosY == 14)
+                    {
+                        Dir = 1;
+                        break;
+                    }
+                    else if (map[PosY, PosX - 1] == (int)Figures.EmptySpace || map[PosY, PosX - 1] == (int)Figures.Eat)
+                    {
+                        ClearTheTrack();
+                        PosX--;
+                    }
+                    else
+                        FindDir();
+                    break;
+                case 3:
+                    if (map[PosY + 1, PosX] == (int)Figures.EmptySpace || map[PosY + 1, PosX] == (int)Figures.Eat)
+                    {
+                        ClearTheTrack();
+                        PosY++;
+                    }
+                    else
+                        FindDir();
+                    break;
+                case 4:
+                    if (map[PosY - 1, PosX] == (int)Figures.EmptySpace || map[PosY - 1, PosX] == (int)Figures.Eat)
+                    {
+                        ClearTheTrack();
+                        PosY--;
+                    }
+                    else
+                        FindDir();
+                    break;
+                default:
+                    break;
+            }
+        }
+        public abstract void FindDir();
     }
 
     class Red : Ghost
@@ -77,7 +146,7 @@ namespace PacManConsole
             base.Draw();
         }
 
-        private void FindDir()
+        public override void FindDir()
         {
             for (int x = PosX - 1; x <= PosX + 1; x++)
             {
@@ -87,17 +156,8 @@ namespace PacManConsole
                     if (x == PosX && y == PosY) continue;
                     if (x != PosX && y != PosY) continue;
 
-                    var targetPoint = new Tuple<int, int>(x, y);
-
-                    if (map[y, x] == (int)Figures.EmptySpace && !visited.Contains(targetPoint) || map[y, x] == (int)Figures.Eat && !visited.Contains(targetPoint))
-                    {
-                        if (x == PosX + 1) Dir = 1;
-                        if (x == PosX - 1) Dir = 2;
-                        if (y == PosY + 1) Dir = 3;
-                        if (y == PosY - 1) Dir = 4;
-
+                    if (ChangeDir(ref x, ref y))
                         return;
-                    }
                 }
             }
             visited.Clear();
@@ -108,57 +168,7 @@ namespace PacManConsole
             if (FindPathToPacMan(ref pacManPosX, ref pacManPosY)) 
                 return;
 
-            switch (Dir)
-            {
-                case 1:
-                    if (PosX + 1 == 27 && PosY == 14)
-                    {
-                        Dir = 2;
-                        break;
-                    }
-                    else if (map[PosY, PosX + 1] == (int)Figures.EmptySpace || map[PosY, PosX + 1] == (int)Figures.Eat)
-                    {
-                        ClearTheTrack();
-                        PosX++;
-                    }
-                    else 
-                        FindDir();
-                    break;
-                case 2:
-                    if (PosX - 1 == 0 && PosY == 14)
-                    {
-                        Dir = 1;
-                        break;
-                    }
-                    else if (map[PosY, PosX - 1] == (int)Figures.EmptySpace || map[PosY, PosX - 1] == (int)Figures.Eat)
-                    {
-                        ClearTheTrack();
-                        PosX--;
-                    }
-                    else 
-                        FindDir();
-                    break;
-                case 3:
-                    if (map[PosY + 1, PosX] == (int)Figures.EmptySpace || map[PosY + 1, PosX] == (int)Figures.Eat)
-                    {
-                        ClearTheTrack();
-                        PosY++;
-                    }
-                    else 
-                        FindDir();
-                    break;
-                case 4:
-                    if (map[PosY - 1, PosX] == (int)Figures.EmptySpace || map[PosY - 1, PosX] == (int)Figures.Eat)
-                    {
-                        ClearTheTrack();
-                        PosY--;
-                    }
-                    else 
-                        FindDir();
-                    break;
-                default:
-                    break;
-            }
+            base.Update(pacManPosX, pacManPosY);
         }
     }
 
@@ -167,7 +177,7 @@ namespace PacManConsole
         public Blue(ref int[,] _map) : base(ref _map)
         {
             PosX = 14; PosY = 13;
-            AttackPower = 17;
+            AttackPower = 18;
         }
         public override void Draw()
         {
@@ -175,7 +185,7 @@ namespace PacManConsole
             base.Draw();
         }
 
-        private void FindDir()
+        public override void FindDir()
         {
             for (int x = PosX + 1; x >= PosX - 1; x--)
             {
@@ -185,17 +195,8 @@ namespace PacManConsole
                     if (x == PosX && y == PosY) continue;
                     if (x != PosX && y != PosY) continue;
 
-                    var targetPoint = new Tuple<int, int>(x, y);
-
-                    if (map[y, x] == (int)Figures.EmptySpace && !visited.Contains(targetPoint) || map[y, x] == (int)Figures.Eat && !visited.Contains(targetPoint))
-                    {
-                        if (x == PosX + 1) Dir = 1;
-                        if (x == PosX - 1) Dir = 2;
-                        if (y == PosY + 1) Dir = 3;
-                        if (y == PosY - 1) Dir = 4;
-
+                    if (ChangeDir(ref x, ref y))
                         return;
-                    }
                 }
             }
             visited.Clear();
@@ -220,6 +221,8 @@ namespace PacManConsole
                         PosX++;
                         FindDir();
                     }
+                    else
+                        Dir = 2;
                     break;
                 case 2:
                     if (PosX - 1 == 0 && PosY == 14)
@@ -233,6 +236,8 @@ namespace PacManConsole
                         PosX--;
                         FindDir();
                     }
+                    else
+                        Dir = 1;
                     break;
                 case 3:
                     if (map[PosY + 1, PosX] == (int)Figures.EmptySpace || map[PosY + 1, PosX] == (int)Figures.Eat)
@@ -265,7 +270,7 @@ namespace PacManConsole
         public Green(ref int[,] _map) : base(ref _map)
         {
             PosX = 13; PosY = 14;
-            AttackPower = 14;
+            AttackPower = 10;
         }
         public override void Draw()
         {
@@ -273,7 +278,7 @@ namespace PacManConsole
             base.Draw();
         }
 
-        private void FindDir()
+        public override void FindDir()
         {
             for (int x = PosX + 1; x >= PosX - 1; x--)
             {
@@ -283,17 +288,8 @@ namespace PacManConsole
                     if (x == PosX && y == PosY) continue;
                     if (x != PosX && y != PosY) continue;
 
-                    var targetPoint = new Tuple<int, int>(x, y);
-
-                    if (map[y, x] == (int)Figures.EmptySpace && !visited.Contains(targetPoint) || map[y, x] == (int)Figures.Eat && !visited.Contains(targetPoint))
-                    {
-                        if (x == PosX + 1) Dir = 1;
-                        if (x == PosX - 1) Dir = 2;
-                        if (y == PosY + 1) Dir = 3;
-                        if (y == PosY - 1) Dir = 4;
-
+                    if (ChangeDir(ref x, ref y))
                         return;
-                    }
                 }
             }
             visited.Clear();
@@ -304,57 +300,7 @@ namespace PacManConsole
             if (FindPathToPacMan(ref pacManPosX, ref pacManPosY))
                 return;
 
-            switch (Dir)
-            {
-                case 1:
-                    if (PosX + 1 == 27 && PosY == 14)
-                    {
-                        Dir = 2;
-                        break;
-                    }
-                    else if (map[PosY, PosX + 1] == (int)Figures.EmptySpace || map[PosY, PosX + 1] == (int)Figures.Eat)
-                    {
-                        ClearTheTrack();
-                        PosX++;
-                    }
-                    else 
-                        FindDir();
-                    break;
-                case 2:
-                    if (PosX - 1 == 0 && PosY == 14)
-                    {
-                        Dir = 1;
-                        break;
-                    }
-                    else if (map[PosY, PosX - 1] == (int)Figures.EmptySpace || map[PosY, PosX - 1] == (int)Figures.Eat)
-                    {
-                        ClearTheTrack();
-                        PosX--;
-                    }
-                    else 
-                        FindDir();
-                    break;
-                case 3:
-                    if (map[PosY + 1, PosX] == (int)Figures.EmptySpace || map[PosY + 1, PosX] == (int)Figures.Eat)
-                    {
-                        ClearTheTrack();
-                        PosY++;
-                    }
-                    else 
-                        FindDir();
-                    break;
-                case 4:
-                    if (map[PosY - 1, PosX] == (int)Figures.EmptySpace || map[PosY - 1, PosX] == (int)Figures.Eat)
-                    {
-                        ClearTheTrack();
-                        PosY--;
-                    }
-                    else 
-                        FindDir();
-                    break;
-                default:
-                    break;
-            }
+            base.Update(pacManPosX, pacManPosY);
         }
     }
 
@@ -363,7 +309,7 @@ namespace PacManConsole
         public Magenta(ref int[,] _map) : base(ref _map)
         {
             PosX = 14; PosY = 14;
-            AttackPower = 10;
+            AttackPower = 8;
         }
         public override void Draw()
         {
@@ -371,7 +317,7 @@ namespace PacManConsole
             base.Draw();
         }
 
-        private void FindDir()
+        public override void FindDir()
         {
             for (int x = PosX + 1; x >= PosX - 1; x--)
             {
@@ -381,17 +327,8 @@ namespace PacManConsole
                     if (x == PosX && y == PosY) continue;
                     if (x != PosX && y != PosY) continue;
 
-                    var targetPoint = new Tuple<int, int>(x, y);
-
-                    if (map[y, x] == (int)Figures.EmptySpace && !visited.Contains(targetPoint) || map[y, x] == (int)Figures.Eat && !visited.Contains(targetPoint))
-                    {
-                        if (x == PosX + 1) Dir = 1;
-                        if (x == PosX - 1) Dir = 2;
-                        if (y == PosY + 1) Dir = 3;
-                        if (y == PosY - 1) Dir = 4;
-
+                    if (ChangeDir(ref x, ref y))
                         return;
-                    }
                 }
             }
             visited.Clear();
@@ -416,6 +353,8 @@ namespace PacManConsole
                         PosX++;
                         FindDir();
                     }
+                    else
+                        Dir = 2;
                     break;
                 case 2:
                     if (PosX - 1 == 0 && PosY == 14)
@@ -429,6 +368,8 @@ namespace PacManConsole
                         PosX--;
                         FindDir();
                     }
+                    else
+                        Dir = 1;
                     break;
                 case 3:
                     if (map[PosY + 1, PosX] == (int)Figures.EmptySpace || map[PosY + 1, PosX] == (int)Figures.Eat)

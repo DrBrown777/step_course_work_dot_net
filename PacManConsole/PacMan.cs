@@ -8,6 +8,7 @@ namespace PacManConsole
         private static PacMan instance;
         static readonly char icon = Convert.ToChar(0x263A);
         static int[,] map;
+        static int score;
 
         public int PosX { get; set; }
         public int PosY { get; set; }
@@ -17,6 +18,7 @@ namespace PacManConsole
             PosX = 13; PosY = 23;
             Dir = 0;
             map = _map;
+            score = 0;
         }
         public static PacMan GetInstance(ref int[,] _map)
         {
@@ -32,9 +34,12 @@ namespace PacManConsole
             Console.SetCursorPosition(PosX, PosY);
             if (map[Console.CursorTop, Console.CursorLeft] == (int)Figures.Eat)
             {
+                score += 10;
                 map[Console.CursorTop, Console.CursorLeft] = (int)Figures.EmptySpace;
             }    
             Console.Write(icon);
+            Console.SetCursorPosition(35, 2);
+            Console.Write("Score: {0}", score);
         }
         private void ClearTheTrack()
         {
