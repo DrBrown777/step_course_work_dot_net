@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace PacManConsole
 {
@@ -7,6 +8,8 @@ namespace PacManConsole
     {
         protected List<Tuple<int, int>> visited;
         protected static int[,] map;
+        protected LeeAlgorithm li;
+        protected int AttackPower;
 
         public Ghost(ref int[,] _map)
         {
@@ -14,6 +17,7 @@ namespace PacManConsole
             Dir = 4;
             visited = new List<Tuple<int, int>>() { new Tuple<int, int>(PosX, PosY) };
             map = _map;
+            li = null;
         }
 
         protected char Icon { get; set; }
@@ -37,7 +41,27 @@ namespace PacManConsole
             else 
                 Console.Write(" ");
         }
-        abstract public void Update();
+        protected bool FindPathToPacMan(ref int pacManPosX, ref int pacManPosY)
+        {
+            int[,] map_1 = new int[map.GetLength(0), map.GetLength(1)];
+            Array.Copy(map, map_1, map.Length);
+
+            map_1[pacManPosY, pacManPosX] = (int)Figures.Destination;
+            map_1[PosY, PosX] = (int)Figures.StartPosition;
+
+            li = new LeeAlgorithm(map_1);
+
+            if (li.PathFound != null && li.LengthPath <= AttackPower)
+            {
+                visited.Clear();
+                ClearTheTrack();
+                PosY = li.PathFound.Item1;
+                PosX = li.PathFound.Item2;
+                return true;
+            }
+            return false;
+        }
+        abstract public void Update(int pacManPosX, int pacManPosY);
     }
 
     class Red : Ghost
@@ -45,6 +69,7 @@ namespace PacManConsole
         public Red(ref int [,] _map) : base(ref _map)
         {
             PosX = 13; PosY = 13;
+            AttackPower = 20;
         }
         public override void Draw()
         {
@@ -78,12 +103,20 @@ namespace PacManConsole
             visited.Clear();
         }
 
-        public override void Update()
+        public override void Update(int pacManPosX, int pacManPosY)
         {
+            if (FindPathToPacMan(ref pacManPosX, ref pacManPosY)) 
+                return;
+
             switch (Dir)
             {
                 case 1:
-                    if (map[PosY, PosX + 1] == (int)Figures.EmptySpace || map[PosY, PosX + 1] == (int)Figures.Eat)
+                    if (PosX + 1 == 27 && PosY == 14)
+                    {
+                        Dir = 2;
+                        break;
+                    }
+                    else if (map[PosY, PosX + 1] == (int)Figures.EmptySpace || map[PosY, PosX + 1] == (int)Figures.Eat)
                     {
                         ClearTheTrack();
                         PosX++;
@@ -92,7 +125,12 @@ namespace PacManConsole
                         FindDir();
                     break;
                 case 2:
-                    if (map[PosY, PosX - 1] == (int)Figures.EmptySpace || map[PosY, PosX - 1] == (int)Figures.Eat)
+                    if (PosX - 1 == 0 && PosY == 14)
+                    {
+                        Dir = 1;
+                        break;
+                    }
+                    else if (map[PosY, PosX - 1] == (int)Figures.EmptySpace || map[PosY, PosX - 1] == (int)Figures.Eat)
                     {
                         ClearTheTrack();
                         PosX--;
@@ -129,6 +167,7 @@ namespace PacManConsole
         public Blue(ref int[,] _map) : base(ref _map)
         {
             PosX = 14; PosY = 13;
+            AttackPower = 17;
         }
         public override void Draw()
         {
@@ -162,8 +201,11 @@ namespace PacManConsole
             visited.Clear();
         }
 
-        public override void Update()
+        public override void Update(int pacManPosX, int pacManPosY)
         {
+            if (FindPathToPacMan(ref pacManPosX, ref pacManPosY))
+                return;
+
             switch (Dir)
             {
                 case 1:
@@ -223,6 +265,7 @@ namespace PacManConsole
         public Green(ref int[,] _map) : base(ref _map)
         {
             PosX = 13; PosY = 14;
+            AttackPower = 14;
         }
         public override void Draw()
         {
@@ -256,12 +299,20 @@ namespace PacManConsole
             visited.Clear();
         }
 
-        public override void Update()
+        public override void Update(int pacManPosX, int pacManPosY)
         {
+            if (FindPathToPacMan(ref pacManPosX, ref pacManPosY))
+                return;
+
             switch (Dir)
             {
                 case 1:
-                    if (map[PosY, PosX + 1] == (int)Figures.EmptySpace || map[PosY, PosX + 1] == (int)Figures.Eat)
+                    if (PosX + 1 == 27 && PosY == 14)
+                    {
+                        Dir = 2;
+                        break;
+                    }
+                    else if (map[PosY, PosX + 1] == (int)Figures.EmptySpace || map[PosY, PosX + 1] == (int)Figures.Eat)
                     {
                         ClearTheTrack();
                         PosX++;
@@ -270,7 +321,12 @@ namespace PacManConsole
                         FindDir();
                     break;
                 case 2:
-                    if (map[PosY, PosX - 1] == (int)Figures.EmptySpace || map[PosY, PosX - 1] == (int)Figures.Eat)
+                    if (PosX - 1 == 0 && PosY == 14)
+                    {
+                        Dir = 1;
+                        break;
+                    }
+                    else if (map[PosY, PosX - 1] == (int)Figures.EmptySpace || map[PosY, PosX - 1] == (int)Figures.Eat)
                     {
                         ClearTheTrack();
                         PosX--;
@@ -307,6 +363,7 @@ namespace PacManConsole
         public Magenta(ref int[,] _map) : base(ref _map)
         {
             PosX = 14; PosY = 14;
+            AttackPower = 10;
         }
         public override void Draw()
         {
@@ -340,8 +397,11 @@ namespace PacManConsole
             visited.Clear();
         }
 
-        public override void Update()
+        public override void Update(int pacManPosX, int pacManPosY)
         {
+            if (FindPathToPacMan(ref pacManPosX, ref pacManPosY))
+                return;
+
             switch (Dir)
             {
                 case 1:

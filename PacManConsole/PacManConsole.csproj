@@ -46,6 +46,7 @@
   <ItemGroup>
     <Compile Include="Figures.cs" />
     <Compile Include="Ghost.cs" />
+    <Compile Include="LeeAlgorithm.cs" />
     <Compile Include="Level.cs" />
     <Compile Include="PacMan.cs" />
     <Compile Include="Program.cs" />

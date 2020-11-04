@@ -19,3 +19,10 @@ C:\Users\Boss\Source\Repos\DrBrown777\step_course_work_dot_net\PacManConsole\obj
 C:\Users\Boss\Source\Repos\DrBrown777\step_course_work_dot_net\PacManConsole\obj\Debug\PacManConsole.csproj.CoreCompileInputs.cache
 C:\Users\Boss\Source\Repos\DrBrown777\step_course_work_dot_net\PacManConsole\obj\Debug\PacManConsole.exe
 C:\Users\Boss\Source\Repos\DrBrown777\step_course_work_dot_net\PacManConsole\obj\Debug\PacManConsole.pdb
+C:\Users\Роман\Source\Repos\DrBrown777\step_course_work_dot_net\PacManConsole\bin\Debug\PacManConsole.exe.config
+C:\Users\Роман\Source\Repos\DrBrown777\step_course_work_dot_net\PacManConsole\bin\Debug\PacManConsole.exe
+C:\Users\Роман\Source\Repos\DrBrown777\step_course_work_dot_net\PacManConsole\bin\Debug\PacManConsole.pdb
+C:\Users\Роман\Source\Repos\DrBrown777\step_course_work_dot_net\PacManConsole\obj\Debug\PacManConsole.csprojAssemblyReference.cache
+C:\Users\Роман\Source\Repos\DrBrown777\step_course_work_dot_net\PacManConsole\obj\Debug\PacManConsole.csproj.CoreCompileInputs.cache
+C:\Users\Роман\Source\Repos\DrBrown777\step_course_work_dot_net\PacManConsole\obj\Debug\PacManConsole.exe
+C:\Users\Роман\Source\Repos\DrBrown777\step_course_work_dot_net\PacManConsole\obj\Debug\PacManConsole.pdb

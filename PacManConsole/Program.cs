@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 
 namespace PacManConsole
 {
@@ -32,7 +34,7 @@ namespace PacManConsole
 
                     foreach (var item in ghost)
                     {
-                        item.Update();
+                        item.Update(pacMan.PosX, pacMan.PosY);
                         item.Draw();
                     }
                 }
