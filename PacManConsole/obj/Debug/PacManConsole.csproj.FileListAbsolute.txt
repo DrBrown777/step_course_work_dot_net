@@ -1,0 +1,14 @@
+C:\Users\Boss\source\repos\PacManConsole\PacManConsole\bin\Debug\PacManConsole.exe.config
+C:\Users\Boss\source\repos\PacManConsole\PacManConsole\bin\Debug\PacManConsole.exe
+C:\Users\Boss\source\repos\PacManConsole\PacManConsole\bin\Debug\PacManConsole.pdb
+C:\Users\Boss\source\repos\PacManConsole\PacManConsole\obj\Debug\PacManConsole.csprojAssemblyReference.cache
+C:\Users\Boss\source\repos\PacManConsole\PacManConsole\obj\Debug\PacManConsole.csproj.CoreCompileInputs.cache
+C:\Users\Boss\source\repos\PacManConsole\PacManConsole\obj\Debug\PacManConsole.exe
+C:\Users\Boss\source\repos\PacManConsole\PacManConsole\obj\Debug\PacManConsole.pdb
+D:\Google Диск\EDUCATION STEP\Курс С#\kurs_work\PacManConsole\PacManConsole\bin\Debug\PacManConsole.exe.config
+D:\Google Диск\EDUCATION STEP\Курс С#\kurs_work\PacManConsole\PacManConsole\bin\Debug\PacManConsole.exe
+D:\Google Диск\EDUCATION STEP\Курс С#\kurs_work\PacManConsole\PacManConsole\bin\Debug\PacManConsole.pdb
+D:\Google Диск\EDUCATION STEP\Курс С#\kurs_work\PacManConsole\PacManConsole\obj\Debug\PacManConsole.csprojAssemblyReference.cache
+D:\Google Диск\EDUCATION STEP\Курс С#\kurs_work\PacManConsole\PacManConsole\obj\Debug\PacManConsole.csproj.CoreCompileInputs.cache
+D:\Google Диск\EDUCATION STEP\Курс С#\kurs_work\PacManConsole\PacManConsole\obj\Debug\PacManConsole.exe
+D:\Google Диск\EDUCATION STEP\Курс С#\kurs_work\PacManConsole\PacManConsole\obj\Debug\PacManConsole.pdb
