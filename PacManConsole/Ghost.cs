@@ -21,8 +21,8 @@ namespace PacManConsole
         }
 
         protected char Icon { get; set; }
-        protected int PosX { get; set; }
-        protected int PosY { get; set; }
+        public int PosX { get; set; }
+        public int PosY { get; set; }
         protected int Dir { get; set; }
         public virtual void Draw()
         {

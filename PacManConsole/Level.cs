@@ -74,7 +74,10 @@ namespace PacManConsole
         }
         public void DrawLevel()
         {
+            Console.Clear();
             Console.ForegroundColor = ConsoleColor.Cyan;
+            Console.CursorVisible = false;
+            Console.SetCursorPosition(0, 0);
 
             for (int i = 0; i < mapHeight; i++)
             {
