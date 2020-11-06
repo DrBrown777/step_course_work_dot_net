@@ -8,7 +8,7 @@ namespace PacManConsole
         private static PacMan instance;
         static readonly char icon = Convert.ToChar(0x263A);
         static int[,] map;
-        public int Score { get; private set; }
+        public int Score { get; set; }
         public int Live { get; set; }
 
         public int PosX { get; set; }
@@ -20,7 +20,7 @@ namespace PacManConsole
             Dir = 0;
             map = _map;
             Score = 0;
-            Live = 1;
+            Live = 3;
         }
         public static PacMan GetInstance(ref int[,] _map)
         {

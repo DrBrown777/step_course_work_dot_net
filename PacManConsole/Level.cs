@@ -17,6 +17,7 @@ namespace PacManConsole
         private const int mapWight = 28;
 
         private readonly char[,] Map;
+        private int[,] _map;
 
         private Level()
         {
@@ -45,6 +46,7 @@ namespace PacManConsole
                         Map[i, j] = tmp[j];
                 }
             }
+            _map = new int[Map.GetLength(0), Map.GetLength(1)];
         }
         public static Level GetInstance()
         {
@@ -56,8 +58,6 @@ namespace PacManConsole
         }
         public int[,] GetMap()
         {
-            int[,]_map = new int[Map.GetLength(0), Map.GetLength(1)];
-
             for (int i = 0; i < Map.GetLength(0); i++)
             {
                 for (int j = 0; j < Map.GetLength(1); j++)
@@ -70,6 +70,7 @@ namespace PacManConsole
                         _map[i, j] = (int)Figures.Barrier;
                 }
             }
+
             return _map;
         }
         public void DrawLevel()
@@ -83,7 +84,7 @@ namespace PacManConsole
             {
                 for (int j = 0; j < mapWight; j++)
                 {
-                    if (Map[i, j] == '1')
+                    if (_map[i, j] == (int)Figures.EmptySpace)
                         Console.Write(' ');
                     else
                         Console.Write(Map[i, j]);

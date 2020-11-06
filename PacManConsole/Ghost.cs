@@ -84,7 +84,6 @@ namespace PacManConsole
                     if (PosX + 1 == 27 && PosY == 14)
                     {
                         Dir = 2;
-                        break;
                     }
                     else if (map[PosY, PosX + 1] == (int)Figures.EmptySpace || map[PosY, PosX + 1] == (int)Figures.Eat)
                     {
@@ -98,7 +97,6 @@ namespace PacManConsole
                     if (PosX - 1 == 0 && PosY == 14)
                     {
                         Dir = 1;
-                        break;
                     }
                     else if (map[PosY, PosX - 1] == (int)Figures.EmptySpace || map[PosY, PosX - 1] == (int)Figures.Eat)
                     {
@@ -213,7 +211,6 @@ namespace PacManConsole
                     if (PosX + 1 == 27 && PosY == 14)
                     {
                         Dir = 2;
-                        break;
                     }
                     else if (map[PosY, PosX + 1] == (int)Figures.EmptySpace || map[PosY, PosX + 1] == (int)Figures.Eat)
                     {
@@ -228,9 +225,8 @@ namespace PacManConsole
                     if (PosX - 1 == 0 && PosY == 14)
                     {
                         Dir = 1;
-                        break;
                     }
-                    else if(map[PosY, PosX - 1] == (int)Figures.EmptySpace || map[PosY, PosX - 1] == (int)Figures.Eat)
+                    else if (map[PosY, PosX - 1] == (int)Figures.EmptySpace || map[PosY, PosX - 1] == (int)Figures.Eat)
                     {
                         ClearTheTrack();
                         PosX--;
@@ -345,7 +341,6 @@ namespace PacManConsole
                     if (PosX + 1 == 27 && PosY == 14)
                     {
                         Dir = 2;
-                        break;
                     }
                     else if (map[PosY, PosX + 1] == (int)Figures.EmptySpace || map[PosY, PosX + 1] == (int)Figures.Eat)
                     {
@@ -360,7 +355,6 @@ namespace PacManConsole
                     if (PosX - 1 == 0 && PosY == 14)
                     {
                         Dir = 1;
-                        break;
                     }
                     else if (map[PosY, PosX - 1] == (int)Figures.EmptySpace || map[PosY, PosX - 1] == (int)Figures.Eat)
                     {
