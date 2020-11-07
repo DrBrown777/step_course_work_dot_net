@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading;
 
 namespace PacManConsole
@@ -7,13 +8,14 @@ namespace PacManConsole
     {
         private static PacMan instance;
         static readonly char icon = Convert.ToChar(0x263A);
+
         static int[,] map;
         public int Score { get; set; }
         public int Live { get; set; }
-
         public int PosX { get; set; }
         public int PosY { get; set; }
         public int Dir { get; set; }
+        public static bool PacmanAttack { get; set; }
         private PacMan(ref int[,] _map)
         {
             PosX = 13; PosY = 23;
@@ -38,7 +40,13 @@ namespace PacManConsole
             {
                 Score += 10;
                 map[Console.CursorTop, Console.CursorLeft] = (int)Figures.EmptySpace;
-            }    
+            }
+            else if (map[Console.CursorTop, Console.CursorLeft] == (int)Figures.Bonus)
+            {
+                PacmanAttack = true;
+                Score += 50;
+                map[Console.CursorTop, Console.CursorLeft] = (int)Figures.EmptySpace;
+            }
             Console.Write(icon);
         }
         private void ClearTheTrack()
@@ -60,7 +68,7 @@ namespace PacManConsole
                         ClearTheTrack();
                         PosX -= 27;
                     }
-                    else if (map[PosY, PosX + 1] == (int)Figures.Eat || map[PosY, PosX + 1] == (int)Figures.EmptySpace)
+                    else if (Global.checkItemMap.Contains(map[PosY, PosX + 1]))
                     {
                         ClearTheTrack();
                         PosX++;
@@ -72,21 +80,21 @@ namespace PacManConsole
                         ClearTheTrack();
                         PosX += 27;
                     }
-                    else if (map[PosY, PosX - 1] == (int)Figures.Eat || map[PosY, PosX - 1] == (int)Figures.EmptySpace)
+                    else if (Global.checkItemMap.Contains(map[PosY, PosX - 1]))
                     {
                         ClearTheTrack();
                         PosX--;
                     }
                     break;
                 case 3:
-                    if (map[PosY + 1, PosX] == (int)Figures.Eat || map[PosY + 1, PosX] == (int)Figures.EmptySpace)
+                    if (Global.checkItemMap.Contains(map[PosY + 1, PosX]))
                     {
                         ClearTheTrack();
                         PosY++;
                     }
                     break;
                 case 4:
-                    if (map[PosY - 1, PosX] == (int)Figures.Eat || map[PosY - 1, PosX] == (int)Figures.EmptySpace)
+                    if (Global.checkItemMap.Contains(map[PosY - 1, PosX]))
                     {
                         ClearTheTrack();
                         PosY--;

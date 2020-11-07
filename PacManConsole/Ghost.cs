@@ -10,7 +10,12 @@ namespace PacManConsole
         protected static int[,] map;
         protected LeeAlgorithm li;
         protected int AttackPower;
+        protected bool SaveTheSkin;
 
+        protected char Icon { get; set; }
+        public int PosX { get; set; }
+        public int PosY { get; set; }
+        protected int Dir { get; set; }
         public Ghost(ref int[,] _map)
         {
             Icon = 'W';
@@ -18,12 +23,8 @@ namespace PacManConsole
             visited = new List<Tuple<int, int>>() { new Tuple<int, int>(PosX, PosY) };
             map = _map;
             li = null;
+            SaveTheSkin = false;
         }
-
-        protected char Icon { get; set; }
-        public int PosX { get; set; }
-        public int PosY { get; set; }
-        protected int Dir { get; set; }
         public virtual void Draw()
         {
             visited.Add(new Tuple<int, int>(PosX, PosY));
@@ -38,6 +39,11 @@ namespace PacManConsole
                 Console.ForegroundColor = ConsoleColor.Cyan;
                 Console.Write(Convert.ToChar(0x2219));
             }
+            else if(map[Console.CursorTop, Console.CursorLeft] == (int)Figures.Bonus)
+            {
+                Console.ForegroundColor = ConsoleColor.DarkYellow;
+                Console.Write(Convert.ToChar(0xA4));
+            }
             else 
                 Console.Write(" ");
         }
@@ -46,8 +52,24 @@ namespace PacManConsole
             int[,] map_1 = new int[map.GetLength(0), map.GetLength(1)];
             Array.Copy(map, map_1, map.Length);
 
-            map_1[pacManPosY, pacManPosX] = (int)Figures.Destination;
-            map_1[PosY, PosX] = (int)Figures.StartPosition;
+            if (SaveTheSkin)
+            {
+                map_1[13, 13] = (int)Figures.Destination;
+                map_1[PosY, PosX] = (int)Figures.StartPosition;
+                Icon = 'M';
+                AttackPower = 100;
+                if (PosY == 13 & PosX == 13)
+                {
+                    SaveTheSkin = false;
+                    Icon = 'W';
+                    ResetAttack();
+                } 
+            }
+            else
+            {
+                map_1[pacManPosY, pacManPosX] = (int)Figures.Destination;
+                map_1[PosY, PosX] = (int)Figures.StartPosition;
+            }
 
             li = new LeeAlgorithm(map_1);
 
@@ -64,8 +86,8 @@ namespace PacManConsole
         protected bool ChangeDir(ref int x, ref int y)
         {
             var targetPoint = new Tuple<int, int>(x, y);
-
-            if (map[y, x] == (int)Figures.EmptySpace && !visited.Contains(targetPoint) || map[y, x] == (int)Figures.Eat && !visited.Contains(targetPoint))
+            
+            if (Global.checkItemMap.Contains(map[y, x]) && !visited.Contains(targetPoint))
             {
                 if (x == PosX + 1) Dir = 1;
                 if (x == PosX - 1) Dir = 2;
@@ -76,7 +98,7 @@ namespace PacManConsole
             }
             return false;
         }
-        public virtual void Update(int pacManPosX, int pacManPosY)
+        public virtual void Update(int pacManPosX, int pacManPosY, bool pacManAtack)
         {
             switch (Dir)
             {
@@ -85,7 +107,7 @@ namespace PacManConsole
                     {
                         Dir = 2;
                     }
-                    else if (map[PosY, PosX + 1] == (int)Figures.EmptySpace || map[PosY, PosX + 1] == (int)Figures.Eat)
+                    else if (Global.checkItemMap.Contains(map[PosY, PosX + 1]))
                     {
                         ClearTheTrack();
                         PosX++;
@@ -98,7 +120,7 @@ namespace PacManConsole
                     {
                         Dir = 1;
                     }
-                    else if (map[PosY, PosX - 1] == (int)Figures.EmptySpace || map[PosY, PosX - 1] == (int)Figures.Eat)
+                    else if (Global.checkItemMap.Contains(map[PosY, PosX - 1]))
                     {
                         ClearTheTrack();
                         PosX--;
@@ -107,7 +129,7 @@ namespace PacManConsole
                         FindDir();
                     break;
                 case 3:
-                    if (map[PosY + 1, PosX] == (int)Figures.EmptySpace || map[PosY + 1, PosX] == (int)Figures.Eat)
+                    if (Global.checkItemMap.Contains(map[PosY + 1, PosX]))
                     {
                         ClearTheTrack();
                         PosY++;
@@ -116,7 +138,7 @@ namespace PacManConsole
                         FindDir();
                     break;
                 case 4:
-                    if (map[PosY - 1, PosX] == (int)Figures.EmptySpace || map[PosY - 1, PosX] == (int)Figures.Eat)
+                    if (Global.checkItemMap.Contains(map[PosY - 1, PosX]))
                     {
                         ClearTheTrack();
                         PosY--;
@@ -129,6 +151,7 @@ namespace PacManConsole
             }
         }
         public abstract void FindDir();
+        public abstract void ResetAttack();
     }
 
     class Red : Ghost
@@ -161,12 +184,19 @@ namespace PacManConsole
             visited.Clear();
         }
 
-        public override void Update(int pacManPosX, int pacManPosY)
+        public override void ResetAttack()
         {
+            AttackPower = 20;
+        }
+
+        public override void Update(int pacManPosX, int pacManPosY, bool pacManAtack)
+        {
+            SaveTheSkin = pacManAtack;
+
             if (FindPathToPacMan(ref pacManPosX, ref pacManPosY)) 
                 return;
 
-            base.Update(pacManPosX, pacManPosY);
+            base.Update(pacManPosX, pacManPosY, pacManAtack);
         }
     }
 
@@ -200,8 +230,15 @@ namespace PacManConsole
             visited.Clear();
         }
 
-        public override void Update(int pacManPosX, int pacManPosY)
+        public override void ResetAttack()
         {
+            AttackPower = 18;
+        }
+
+        public override void Update(int pacManPosX, int pacManPosY, bool pacManAtack)
+        {
+            SaveTheSkin = pacManAtack;
+
             if (FindPathToPacMan(ref pacManPosX, ref pacManPosY))
                 return;
 
@@ -212,7 +249,7 @@ namespace PacManConsole
                     {
                         Dir = 2;
                     }
-                    else if (map[PosY, PosX + 1] == (int)Figures.EmptySpace || map[PosY, PosX + 1] == (int)Figures.Eat)
+                    else if (Global.checkItemMap.Contains(map[PosY, PosX + 1]))
                     {
                         ClearTheTrack();
                         PosX++;
@@ -226,7 +263,7 @@ namespace PacManConsole
                     {
                         Dir = 1;
                     }
-                    else if (map[PosY, PosX - 1] == (int)Figures.EmptySpace || map[PosY, PosX - 1] == (int)Figures.Eat)
+                    else if (Global.checkItemMap.Contains(map[PosY, PosX - 1]))
                     {
                         ClearTheTrack();
                         PosX--;
@@ -236,7 +273,7 @@ namespace PacManConsole
                         Dir = 1;
                     break;
                 case 3:
-                    if (map[PosY + 1, PosX] == (int)Figures.EmptySpace || map[PosY + 1, PosX] == (int)Figures.Eat)
+                    if (Global.checkItemMap.Contains(map[PosY + 1, PosX]))
                     {
                         ClearTheTrack();
                         PosY++;
@@ -246,7 +283,7 @@ namespace PacManConsole
                         Dir = 4;
                     break;
                 case 4:
-                    if (map[PosY - 1, PosX] == (int)Figures.EmptySpace || map[PosY - 1, PosX] == (int)Figures.Eat)
+                    if (Global.checkItemMap.Contains(map[PosY - 1, PosX]))
                     {
                         ClearTheTrack();
                         PosY--;
@@ -291,12 +328,19 @@ namespace PacManConsole
             visited.Clear();
         }
 
-        public override void Update(int pacManPosX, int pacManPosY)
+        public override void ResetAttack()
         {
+            AttackPower = 10;
+        }
+
+        public override void Update(int pacManPosX, int pacManPosY, bool pacManAtack)
+        {
+            SaveTheSkin = pacManAtack;
+
             if (FindPathToPacMan(ref pacManPosX, ref pacManPosY))
                 return;
 
-            base.Update(pacManPosX, pacManPosY);
+            base.Update(pacManPosX, pacManPosY, pacManAtack);
         }
     }
 
@@ -330,8 +374,15 @@ namespace PacManConsole
             visited.Clear();
         }
 
-        public override void Update(int pacManPosX, int pacManPosY)
+        public override void ResetAttack()
         {
+            AttackPower = 8;
+        }
+
+        public override void Update(int pacManPosX, int pacManPosY, bool pacManAtack)
+        {
+            SaveTheSkin = pacManAtack;
+
             if (FindPathToPacMan(ref pacManPosX, ref pacManPosY))
                 return;
 
@@ -342,7 +393,7 @@ namespace PacManConsole
                     {
                         Dir = 2;
                     }
-                    else if (map[PosY, PosX + 1] == (int)Figures.EmptySpace || map[PosY, PosX + 1] == (int)Figures.Eat)
+                    else if (Global.checkItemMap.Contains(map[PosY, PosX + 1]))
                     {
                         ClearTheTrack();
                         PosX++;
@@ -356,7 +407,7 @@ namespace PacManConsole
                     {
                         Dir = 1;
                     }
-                    else if (map[PosY, PosX - 1] == (int)Figures.EmptySpace || map[PosY, PosX - 1] == (int)Figures.Eat)
+                    else if (Global.checkItemMap.Contains(map[PosY, PosX - 1]))
                     {
                         ClearTheTrack();
                         PosX--;
@@ -366,7 +417,7 @@ namespace PacManConsole
                         Dir = 1;
                     break;
                 case 3:
-                    if (map[PosY + 1, PosX] == (int)Figures.EmptySpace || map[PosY + 1, PosX] == (int)Figures.Eat)
+                    if (Global.checkItemMap.Contains(map[PosY + 1, PosX]))
                     {
                         ClearTheTrack();
                         PosY++;
@@ -376,7 +427,7 @@ namespace PacManConsole
                         Dir = 4;
                     break;
                 case 4:
-                    if (map[PosY - 1, PosX] == (int)Figures.EmptySpace || map[PosY - 1, PosX] == (int)Figures.Eat)
+                    if (Global.checkItemMap.Contains(map[PosY - 1, PosX]))
                     {
                         ClearTheTrack();
                         PosY--;

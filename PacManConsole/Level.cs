@@ -25,6 +25,8 @@ namespace PacManConsole
 
             rd = new StreamReader(path, Encoding.UTF8);
 
+            Random rand = new Random();
+
             string tmpLine;
 
             string[] line = new string[mapHeight];
@@ -47,6 +49,18 @@ namespace PacManConsole
                 }
             }
             _map = new int[Map.GetLength(0), Map.GetLength(1)];
+            
+            int[] bonus = new int[] { 1, 5, 8, 20, 26, 29 };
+
+            for (int i = 0; i < mapHeight; i++)
+            {
+                int j = rand.Next(1, 28);
+                
+                if (bonus.Contains(i) && Map[i, j] == 8729)
+                {
+                    Map[i, j] = Convert.ToChar(0xA4);
+                }
+            }
         }
         public static Level GetInstance()
         {
@@ -66,6 +80,8 @@ namespace PacManConsole
                         _map[i, j] = (int)Figures.EmptySpace;
                     else if (Map[i, j] == 8729)
                         _map[i, j] = (int)Figures.Eat;
+                    else if (Map[i, j] == 164)
+                        _map[i, j] = (int)Figures.Bonus;
                     else
                         _map[i, j] = (int)Figures.Barrier;
                 }
@@ -86,6 +102,12 @@ namespace PacManConsole
                 {
                     if (_map[i, j] == (int)Figures.EmptySpace)
                         Console.Write(' ');
+                    else if (_map[i, j] == (int)Figures.Bonus)
+                    {
+                        Console.ForegroundColor = ConsoleColor.DarkYellow;
+                        Console.Write(Convert.ToChar(0xA4));
+                        Console.ForegroundColor = ConsoleColor.Cyan;
+                    }
                     else
                         Console.Write(Map[i, j]);
                 }

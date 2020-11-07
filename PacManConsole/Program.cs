@@ -128,9 +128,11 @@ namespace PacManConsole
 
                     foreach (var item in ghost)
                     {
-                        item.Update(pacMan.PosX, pacMan.PosY);
+                       
+                        item.Update(pacMan.PosX, pacMan.PosY, PacMan.PacmanAttack);
+                       
                         item.Draw();
-                        if (item.PosX == pacMan.PosX & item.PosY == pacMan.PosY)
+                        if (item.PosX == pacMan.PosX & item.PosY == pacMan.PosY & !PacMan.PacmanAttack)
                         {
                             pacMan.Live--;
                             Console.SetCursorPosition(35, 5);
@@ -156,18 +158,16 @@ namespace PacManConsole
 
                 switch (k.Key)
                 {
-                    case ConsoleKey.RightArrow when map[pacMan.PosY, pacMan.PosX + 1 != 28 ? pacMan.PosX + 1 : pacMan.PosX] == (int)Figures.Eat 
-                                                    || map[pacMan.PosY, pacMan.PosX + 1 != 28 ? pacMan.PosX + 1 : pacMan.PosX] == (int)Figures.EmptySpace:
+                    case ConsoleKey.RightArrow when Global.checkItemMap.Contains(map[pacMan.PosY, pacMan.PosX + 1 != 28 ? pacMan.PosX + 1 : pacMan.PosX]):
                         pacMan.Dir = (int)Dir.Right;
                         break;
-                    case ConsoleKey.LeftArrow when (map[pacMan.PosY, pacMan.PosX - 1 != -1 ? pacMan.PosX - 1 : pacMan.PosX] == (int)Figures.Eat)
-                                                    || (map[pacMan.PosY, pacMan.PosX - 1 != -1 ? pacMan.PosX - 1 : pacMan.PosX] == (int)Figures.EmptySpace):
+                    case ConsoleKey.LeftArrow when Global.checkItemMap.Contains(map[pacMan.PosY, pacMan.PosX - 1 != -1 ? pacMan.PosX - 1 : pacMan.PosX]):
                         pacMan.Dir = (int)Dir.Left;
                         break;
-                    case ConsoleKey.DownArrow when (map[pacMan.PosY + 1, pacMan.PosX] == (int)Figures.Eat) || (map[pacMan.PosY + 1, pacMan.PosX] == (int)Figures.EmptySpace):
+                    case ConsoleKey.DownArrow when Global.checkItemMap.Contains(map[pacMan.PosY + 1, pacMan.PosX]):
                         pacMan.Dir = (int)Dir.Down;
                         break;
-                    case ConsoleKey.UpArrow when map[pacMan.PosY - 1, pacMan.PosX] == (int)Figures.Eat || map[pacMan.PosY - 1, pacMan.PosX] == (int)Figures.EmptySpace:
+                    case ConsoleKey.UpArrow when Global.checkItemMap.Contains(map[pacMan.PosY - 1, pacMan.PosX]):
                         pacMan.Dir = (int)Dir.Up;
                         break;
                     default:

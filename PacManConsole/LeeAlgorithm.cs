@@ -86,13 +86,13 @@ namespace PacManConsole
                         if (ArrayGraph[i, j] == _step)
                         {
                             if (i != w - 1)
-                                if (ArrayGraph[i + 1, j] == (int)Figures.EmptySpace || ArrayGraph[i + 1, j] == (int)Figures.Eat) ArrayGraph[i + 1, j] = _step + 1;
+                                if (Global.checkItemMap.Contains(ArrayGraph[i + 1, j])) ArrayGraph[i + 1, j] = _step + 1;
                             if (j != h - 1)
-                                if (ArrayGraph[i, j + 1] == (int)Figures.EmptySpace || ArrayGraph[i, j + 1] == (int)Figures.Eat) ArrayGraph[i, j + 1] = _step + 1;
+                                if (Global.checkItemMap.Contains(ArrayGraph[i, j + 1])) ArrayGraph[i, j + 1] = _step + 1;
                             if (i != 0)
-                                if (ArrayGraph[i - 1, j] == (int)Figures.EmptySpace || ArrayGraph[i - 1, j] == (int)Figures.Eat) ArrayGraph[i - 1, j] = _step + 1;
+                                if (Global.checkItemMap.Contains(ArrayGraph[i - 1, j])) ArrayGraph[i - 1, j] = _step + 1;
                             if (j != 0)
-                                if (ArrayGraph[i, j - 1] == (int)Figures.EmptySpace || ArrayGraph[i - 1, j] == (int)Figures.Eat) ArrayGraph[i, j - 1] = _step + 1;
+                                if (Global.checkItemMap.Contains(ArrayGraph[i, j - 1])) ArrayGraph[i, j - 1] = _step + 1;
 
                             if (i < w - 1)
                                 if (ArrayGraph[i + 1, j] == (int)Figures.Destination)
