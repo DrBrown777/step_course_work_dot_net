@@ -16,6 +16,7 @@ namespace PacManConsole
         public int PosX { get; set; }
         public int PosY { get; set; }
         protected int Dir { get; set; }
+
         public Ghost(ref int[,] _map)
         {
             Icon = 'W';
@@ -25,12 +26,14 @@ namespace PacManConsole
             li = null;
             SaveTheSkin = false;
         }
+
         public virtual void Draw()
         {
             visited.Add(new Tuple<int, int>(PosX, PosY));
             Console.SetCursorPosition(PosX, PosY);
             Console.Write(Icon);
         }
+
         protected void ClearTheTrack()
         {
             Console.SetCursorPosition(PosX, PosY);
@@ -47,6 +50,7 @@ namespace PacManConsole
             else 
                 Console.Write(" ");
         }
+
         protected bool FindPathToPacMan(ref int pacManPosX, ref int pacManPosY)
         {
             int[,] map_1 = new int[map.GetLength(0), map.GetLength(1)];
@@ -58,12 +62,6 @@ namespace PacManConsole
                 map_1[PosY, PosX] = (int)Figures.StartPosition;
                 Icon = 'M';
                 AttackPower = 100;
-                if (PosY == 13 & PosX == 13)
-                {
-                    SaveTheSkin = false;
-                    Icon = 'W';
-                    ResetAttack();
-                } 
             }
             else
             {
@@ -83,6 +81,7 @@ namespace PacManConsole
             }
             return false;
         }
+
         protected bool ChangeDir(ref int x, ref int y)
         {
             var targetPoint = new Tuple<int, int>(x, y);
@@ -98,6 +97,7 @@ namespace PacManConsole
             }
             return false;
         }
+
         public virtual void Update(int pacManPosX, int pacManPosY, bool pacManAtack)
         {
             switch (Dir)
@@ -150,6 +150,7 @@ namespace PacManConsole
                     break;
             }
         }
+
         public abstract void FindDir();
         public abstract void ResetAttack();
     }
@@ -161,6 +162,7 @@ namespace PacManConsole
             PosX = 13; PosY = 13;
             AttackPower = 20;
         }
+
         public override void Draw()
         {
             Console.ForegroundColor = ConsoleColor.Red;
@@ -186,6 +188,8 @@ namespace PacManConsole
 
         public override void ResetAttack()
         {
+            SaveTheSkin = false;
+            Icon = 'W';
             AttackPower = 20;
         }
 
@@ -207,6 +211,7 @@ namespace PacManConsole
             PosX = 14; PosY = 13;
             AttackPower = 18;
         }
+
         public override void Draw()
         {
             Console.ForegroundColor = ConsoleColor.Blue;
@@ -232,6 +237,8 @@ namespace PacManConsole
 
         public override void ResetAttack()
         {
+            SaveTheSkin = false;
+            Icon = 'W';
             AttackPower = 18;
         }
 
@@ -305,6 +312,7 @@ namespace PacManConsole
             PosX = 13; PosY = 14;
             AttackPower = 10;
         }
+
         public override void Draw()
         {
             Console.ForegroundColor = ConsoleColor.Green;
@@ -330,6 +338,8 @@ namespace PacManConsole
 
         public override void ResetAttack()
         {
+            SaveTheSkin = false;
+            Icon = 'W';
             AttackPower = 10;
         }
 
@@ -351,6 +361,7 @@ namespace PacManConsole
             PosX = 14; PosY = 14;
             AttackPower = 8;
         }
+
         public override void Draw()
         {
             Console.ForegroundColor = ConsoleColor.Magenta;
@@ -376,6 +387,8 @@ namespace PacManConsole
 
         public override void ResetAttack()
         {
+            SaveTheSkin = false;
+            Icon = 'W';
             AttackPower = 8;
         }
 

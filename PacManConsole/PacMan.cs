@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Threading;
+using Timer = System.Timers.Timer;
 
 namespace PacManConsole
 {
@@ -8,6 +9,7 @@ namespace PacManConsole
     {
         private static PacMan instance;
         static readonly char icon = Convert.ToChar(0x263A);
+        static Timer timer;
 
         static int[,] map;
         public int Score { get; set; }
@@ -15,7 +17,8 @@ namespace PacManConsole
         public int PosX { get; set; }
         public int PosY { get; set; }
         public int Dir { get; set; }
-        public static bool PacmanAttack { get; set; }
+        public bool PacmanAttack { get; set; }
+        
         private PacMan(ref int[,] _map)
         {
             PosX = 13; PosY = 23;
@@ -23,7 +26,19 @@ namespace PacManConsole
             map = _map;
             Score = 0;
             Live = 3;
+            timer = new Timer(10000)
+            {
+                AutoReset = false
+            };
+            timer.Elapsed += Timer_Elapsed; 
         }
+
+        private void Timer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
+        {
+            PacmanAttack = false;
+            timer.Stop();
+        }
+
         public static PacMan GetInstance(ref int[,] _map)
         {
             if (instance == null)
@@ -32,6 +47,7 @@ namespace PacManConsole
             }
             return instance;
         }
+
         private void Draw()
         {
             Console.ForegroundColor = ConsoleColor.Yellow;
@@ -44,16 +60,19 @@ namespace PacManConsole
             else if (map[Console.CursorTop, Console.CursorLeft] == (int)Figures.Bonus)
             {
                 PacmanAttack = true;
+                timer.Start();
                 Score += 50;
                 map[Console.CursorTop, Console.CursorLeft] = (int)Figures.EmptySpace;
             }
             Console.Write(icon);
         }
+
         private void ClearTheTrack()
         {
             Console.SetCursorPosition(PosX, PosY);
             Console.Write(" ");
         }
+
         public void Update(int speed)
         {
             Draw();

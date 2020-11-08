@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace PacManConsole
 {
@@ -62,6 +60,7 @@ namespace PacManConsole
                 }
             }
         }
+
         public static Level GetInstance()
         {
             if (instance == null)
@@ -70,6 +69,7 @@ namespace PacManConsole
             }
             return instance;
         }
+
         public int[,] GetMap()
         {
             for (int i = 0; i < Map.GetLength(0); i++)
@@ -89,6 +89,17 @@ namespace PacManConsole
 
             return _map;
         }
+
+        public bool CheckWin()
+        {
+            foreach (var item in _map)
+            {
+                if (item.Equals((int)Figures.Eat))
+                    return false;
+            }
+            return true;
+        }
+
         public void DrawLevel()
         {
             Console.Clear();

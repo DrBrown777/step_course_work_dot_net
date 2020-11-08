@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Threading;
 
@@ -13,92 +12,9 @@ namespace PacManConsole
         static ConsoleKeyInfo k;
         static bool gameover = false;
 
-        static void Menu()
-        {
-            Console.ForegroundColor = ConsoleColor.Yellow;
-            Console.SetCursorPosition(15, 8);
-            Console.WriteLine(@" 
-              ____  ____  ____  _      ____  _          
-            /  __\/  _ \/   _\/ \__/|/  _ \/ \  /|     
-            |  \/|| / \||  /  | |\/||| / \|| |\ ||     
-            |  __/| |-|||  \_ | |  ||| |-||| | \||     
-            \_/   \_/ \|\____/\_/  \|\_/ \|\_/  \|     
-                                           
-           ____  ____  _      ____  ____  _     _____
-          /   _\/  _ \/ \  /|/ ___\/  _ \/ \   /  __/
-          |  /  | / \|| |\ |||    \| / \|| |   |  \  
-          |  \__| \_/|| | \||\___ || \_/|| |_/\|  /_ 
-          \____/\____/\_/  \|\____/\____/\____/\____\
-                                           
-");
-            Console.SetCursorPosition(18, 26);
-            Console.ForegroundColor = ConsoleColor.Cyan;
-            Console.WriteLine("Press Enter to Start Game");
-            k = Console.ReadKey(true);
-            
-            while (Console.KeyAvailable == false)
-            {
-                if (k.Key == ConsoleKey.Enter)
-                    break;
-            }
-        }
-
-        static void GameOver()
-        {
-            Console.Clear();
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.SetCursorPosition(15, 8);
-            Console.WriteLine(@" 
-                 _____ ____  _      _____
-                /  __//  _ \/ \__/|/  __/
-                | |  _| / \|| |\/|||  \  
-                | |_//| |-||| |  |||  /_ 
-                \____\\_/ \|\_/  \|\____\
-                         
-                 ____  _     _____ ____  
-                /  _ \/ \ |\/  __//  __\ 
-                | / \|| | //|  \  |  \/| 
-                | \_/|| \// |  /_ |    / 
-                \____/\__/  \____\\_/\_\ 
-                                                              
-");
-            Console.SetCursorPosition(18, 26);
-            Console.ForegroundColor = ConsoleColor.Cyan;
-            Console.WriteLine("Press Enter to Menu");
-            k = Console.ReadKey(true);
-
-            while (Console.KeyAvailable == false)
-            {
-                if (k.Key == ConsoleKey.Enter)
-                    break;
-            }
-        }
-
-        static void DrawStatistics(int score, int life)
-        {
-            Console.ForegroundColor = ConsoleColor.Yellow;
-            Console.SetCursorPosition(35, 2);
-            Console.Write("Score: {0}", score);
-            Console.SetCursorPosition(35, 3);
-            Console.Write("Life: {0}", life);
-        }
-
-        static void ReloadLevel(ref List<Ghost> ghost, ref PacMan pacMan, ref int[,] map, ref Level level)
-        {
-            ghost.Clear();
-            ghost.Add(new Red(ref map));
-            ghost.Add(new Blue(ref map));
-            ghost.Add(new Green(ref map));
-            ghost.Add(new Magenta(ref map));
-            Console.Clear();
-            level.DrawLevel();
-            pacMan.PosX = 13; pacMan.PosY = 23;
-            pacMan.Dir = 0;
-        }
-
         static void Main(string[] args)
         {
-            Console.Title = "PacMan Console";
+            Console.Title = "PacMan Console v.1.0 by dr_brown";
             Console.WindowHeight = 40; Console.BufferHeight = 40;
             Console.WindowWidth = 60; Console.BufferWidth = 60;
             Console.CursorVisible = false;
@@ -128,11 +44,12 @@ namespace PacManConsole
 
                     foreach (var item in ghost)
                     {
-                       
-                        item.Update(pacMan.PosX, pacMan.PosY, PacMan.PacmanAttack);
+                        if (!pacMan.PacmanAttack) item.ResetAttack();
+
+                        item.Update(pacMan.PosX, pacMan.PosY, pacMan.PacmanAttack);
                        
                         item.Draw();
-                        if (item.PosX == pacMan.PosX & item.PosY == pacMan.PosY & !PacMan.PacmanAttack)
+                        if (item.PosX == pacMan.PosX & item.PosY == pacMan.PosY & !pacMan.PacmanAttack)
                         {
                             pacMan.Live--;
                             Console.SetCursorPosition(35, 5);
@@ -151,7 +68,16 @@ namespace PacManConsole
                         GameOver();
                         gameover = true;
                         break;
-                    } 
+                    }
+                    else if(level.CheckWin())
+                    {
+                        pacMan.Live = 3;
+                        pacMan.Score = 0;
+                        map = level.GetMap();
+                        GameWin();
+                        gameover = true;
+                        break;
+                    }
                 }
                 
                 k = Console.ReadKey(true);
@@ -173,6 +99,121 @@ namespace PacManConsole
                     default:
                         break;
                 }
+            }
+        }
+
+        static void DrawStatistics(int score, int life)
+        {
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.SetCursorPosition(35, 2);
+            Console.Write("Score: {0}", score);
+            Console.SetCursorPosition(35, 3);
+            Console.Write("Life: {0}", life);
+        }
+
+        static void ReloadLevel(ref List<Ghost> ghost, ref PacMan pacMan, ref int[,] map, ref Level level)
+        {
+            ghost.Clear();
+            ghost.Add(new Red(ref map));
+            ghost.Add(new Blue(ref map));
+            ghost.Add(new Green(ref map));
+            ghost.Add(new Magenta(ref map));
+            Console.Clear();
+            level.DrawLevel();
+            pacMan.PosX = 13; pacMan.PosY = 23;
+            pacMan.Dir = 0;
+        }
+
+        static void Menu()
+        {
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.SetCursorPosition(15, 8);
+            Console.WriteLine(@" 
+              ____  ____  ____  _      ____  _          
+            /  __\/  _ \/   _\/ \__/|/  _ \/ \  /|     
+            |  \/|| / \||  /  | |\/||| / \|| |\ ||     
+            |  __/| |-|||  \_ | |  ||| |-||| | \||     
+            \_/   \_/ \|\____/\_/  \|\_/ \|\_/  \|     
+                                           
+           ____  ____  _      ____  ____  _     _____
+          /   _\/  _ \/ \  /|/ ___\/  _ \/ \   /  __/
+          |  /  | / \|| |\ |||    \| / \|| |   |  \  
+          |  \__| \_/|| | \||\___ || \_/|| |_/\|  /_ 
+          \____/\____/\_/  \|\____/\____/\____/\____\
+                                           
+            ");
+            Console.SetCursorPosition(18, 26);
+            Console.ForegroundColor = ConsoleColor.Cyan;
+            Console.WriteLine("Press Enter to Start Game");
+            k = Console.ReadKey(true);
+
+            while (Console.KeyAvailable == false)
+            {
+                if (k.Key == ConsoleKey.Enter)
+                    break;
+            }
+        }
+
+        static void GameOver()
+        {
+            Console.Clear();
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.SetCursorPosition(15, 8);
+            Console.WriteLine(@" 
+                 _____ ____  _      _____
+                /  __//  _ \/ \__/|/  __/
+                | |  _| / \|| |\/|||  \  
+                | |_//| |-||| |  |||  /_ 
+                \____\\_/ \|\_/  \|\____\
+                         
+                 ____  _     _____ ____  
+                /  _ \/ \ |\/  __//  __\ 
+                | / \|| | //|  \  |  \/| 
+                | \_/|| \// |  /_ |    / 
+                \____/\__/  \____\\_/\_\ 
+                                                              
+            ");
+            Console.SetCursorPosition(18, 26);
+            Console.ForegroundColor = ConsoleColor.Cyan;
+            Console.WriteLine("Press Enter to Menu");
+            k = Console.ReadKey(true);
+
+            while (Console.KeyAvailable == false)
+            {
+                if (k.Key == ConsoleKey.Enter)
+                    break;
+            }
+        }
+
+        static void GameWin()
+        {
+            Console.Clear();
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.SetCursorPosition(15, 8);
+            Console.WriteLine(@" 
+                 
+                    ___  _ ____  _      
+                    \  \///  _ \/ \ /\  
+                     \  / | / \|| | ||  
+                     / /  | \_/|| \_/|  
+                    /_/   \____/\____/  
+                    
+                     _      _  _      _ 
+                    / \  /|/ \/ \  /|/ \
+                    | |  ||| || |\ ||| |
+                    | |/\||| || | \||\_/
+                    \_/  \|\_/\_/  \|(_)
+                                                          
+            ");
+            Console.SetCursorPosition(18, 26);
+            Console.ForegroundColor = ConsoleColor.Cyan;
+            Console.WriteLine("Press Enter to Menu");
+            k = Console.ReadKey(true);
+
+            while (Console.KeyAvailable == false)
+            {
+                if (k.Key == ConsoleKey.Enter)
+                    break;
             }
         }
     }
